@@ -281,7 +281,25 @@ elif cipher == 's':
             sourceFile = f.read()
         
         # create a key with length equal to source file length
-        key = secrets.token_bytes(len(sourceFile))
+        #if the msg is less than 128 bytes long
+         if len(sourcefile) <= 128:
+            key = secrets.token_bytes(len(sourceFile))
+        #if the msg is more than 128 bytes long
+        else:
+            key = secrets.token_bytes(128)
+            keypart = key[120:128]
+            remaining = len(sourceFile) - 128 #see how many bytes are left
+        #calculate if 16 more bytes will fit to match the msg length - if yes generate random bytes
+            if remaining%16 == 0:
+                while remaining%16 == 0
+                extendedkey = generate_key_schedule(keypart,1)
+                key = key + "" + extendedkey
+                remaining -= 16 #remove the newly added 16 bytes to know how much is left
+                
+        #if 15 bytes cannot fit, then generate just enough bytes to fit the msg length
+            else:
+                extendedkey = secrets.token_bytes(remaining)
+                key = key + "" + extendedkey
         #  write it to file
         with keyFileName.open(mode='wb') as f:
             f.write(key)
